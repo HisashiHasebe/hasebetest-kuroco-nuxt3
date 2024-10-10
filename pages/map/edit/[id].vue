@@ -2,6 +2,8 @@
   <div v-if="data" class="container">
     <h3>Map (Google Maps)</h3>
     <div>
+      The position that is set changes when you click on the map. You can also
+      set the zoom and other states.
     </div>
     <form id="topics_edit" @submit.prevent="update">
       <div>
@@ -43,6 +45,7 @@ const markerOptions = computed(() => ({
 }));
 const id = ref(route.params.id);
 const contents = ref({});
+const errors = ref([]);
 const MAP_ID = "DEMO_MAP_ID";
 console.log("googleMap", gmap.value);
 const { data } = await useAsyncData("mapDetails", async () => {
@@ -61,6 +64,7 @@ const { data } = await useAsyncData("mapDetails", async () => {
     return {};
   }
 });
+
 onMounted(() => {
   contents.value = data.value;
   if (contents.value.gmap?.gmap_x && contents.value.gmap?.gmap_y) {
@@ -74,6 +78,7 @@ onMounted(() => {
     markPlace.value = { lat, lng };
   }
 });
+
 const gmap_zoom = computed({
   get: () => Number(contents.value.gmap?.gmap_zoom) || 15,
   set: (val) => {
@@ -88,10 +93,48 @@ const gmap_type = computed({
     contents.value.gmap.gmap_type = val;
   },
 });
-function mapClicked(event) {
-  // console.log("mapCLicked", { event });
+
+function mark(event) {
+  markPlace.value = {
+    lat: event.latLng.lat(),
+    lng: event.latLng.lng(),
+  };
+  update()
 }
+
 function setZoom() {
   contents.value.gmap.gmap_zoom = gmap.value.zoom;
+}
+
+async function update() {
+  const params = {
+    gmap: {
+      gmap_x: "",
+      gmap_y: "",
+      gmap_zoom: contents.value?.gmap?.gmap_zoom || "15",
+      gmap_type: contents.value?.gmap?.gmap_type || "roadmap",
+    },
+  };
+  if (markPlace.value) {
+    params.gmap.gmap_x = String(markPlace.value.lng);
+    params.gmap.gmap_y = String(markPlace.value.lat);
+  }
+  try {
+    const response = await $fetch(
+      "/rcms-api/1/update_news/" + route.params.id,
+      {
+        method: "POST",
+        credentials: "include",
+        baseURL: config.public.apiBase,
+        body: params,
+      }
+    );
+    // console.log(response);
+    if (response.data.errors?.length) {
+      console.log(response.data.errors);
+    }
+    errors.value = [];
+  } catch (error) {
+  }
 }
 </script>
