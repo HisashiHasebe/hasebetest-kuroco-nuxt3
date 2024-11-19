@@ -40,17 +40,11 @@ let resultMessageColor = computed(() => {
 
 async function login() {
   try {
-    await $fetch("/rcms-api/13/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: email.value,
-        password: password.value,
-        login_save: 1,
-      }),
-      baseURL: config.public.apiBase,
-      credentials: "include",
-    });
-    store.setProfile({ profile: {} }); // Apply the dummy object to store.state.profile
+    const payload = {
+      email: email.value,
+      password: password.value,
+    };
+    await store.login(payload);
     loginStatus.value = "success";
     resultMessage.value = "Login successful";
   } catch (e) {

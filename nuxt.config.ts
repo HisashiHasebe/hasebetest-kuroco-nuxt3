@@ -1,6 +1,6 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
-    ssr: false,
+  ssr: false,
 
     runtimeConfig: {
         // Public keys that are exposed to the client
@@ -11,22 +11,25 @@ export default defineNuxtConfig({
             publicApiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL
         }
     },
-
-    modules: [[
-        "@nuxtjs/i18n",
-        {
-            strategy: "prefix_and_default",
-            // Define the language options
-            locales: [
-                { code: "ja", file: "ja.json" },
-                { code: "en", file: "en.json" },
-            ],
-            // Set the default language
-            defaultLocale: "ja",
-            vueI18nLoader: true,
-            lazy: true,
-            // Specify the directory for the JSON file
-            langDir: "locales/",
-        },
-    ], "@pinia/nuxt"],
-})
+  },
+  modules: [
+    "@pinia/nuxt",
+    [
+      "@nuxtjs/i18n",
+      {
+        strategy: "prefix_and_default",
+        // Define the language options
+        locales: [
+          { code: "ja", file: "ja.json" },
+          { code: "en", file: "en.json" },
+        ],
+        // Set the default language
+        defaultLocale: "ja",
+        vueI18nLoader: true,
+        lazy: true,
+        // Specify the directory for the JSON file
+        langDir: "locales/",
+      },
+    ],
+  ],
+});
