@@ -18,16 +18,14 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   if (!store.authenticated) {
     try {
       if (isRedirectLoop) {
-        window.location.href = '/login';
-        return;
+        return navigateTo('/login');
       }
       
       await store.restoreLoginState();
     } catch (err) {
       sessionStorage.setItem('lastRedirectTime', now.toString());
       
-      window.location.href = '/login';
-      return;
+      return navigateTo('/login');
     }
   }
 });

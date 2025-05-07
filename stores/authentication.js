@@ -46,7 +46,8 @@ export const useStore = defineStore('authentication', {
       this.setProfile(null);
       this.updateLocalStorage({ authenticated: false });
 
-      window.location.href = "/login";
+      const router = useRouter();
+      router.push('/login');
     },
     async restoreLoginState() {
       const authenticated = localStorage.getItem("authenticated");
