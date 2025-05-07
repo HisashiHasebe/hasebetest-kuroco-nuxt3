@@ -15,7 +15,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     try {
       await store.restoreLoginState();
     } catch (err) {
-      return navigateTo('/login');
+      return window.location.href = "/login";
     }
   }
 });
