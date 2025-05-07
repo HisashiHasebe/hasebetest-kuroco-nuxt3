@@ -11,20 +11,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return;
   }
   
-  const now = Date.now();
-  const lastRedirectTime = parseInt(sessionStorage.getItem('lastRedirectTime') || '0');
-  const isRedirectLoop = now - lastRedirectTime < 2000; // Less than 2 seconds between redirects
-  
   if (!store.authenticated) {
     try {
-      if (isRedirectLoop) {
-        return navigateTo('/login');
-      }
-      
       await store.restoreLoginState();
     } catch (err) {
-      sessionStorage.setItem('lastRedirectTime', now.toString());
-      
       return navigateTo('/login');
     }
   }
