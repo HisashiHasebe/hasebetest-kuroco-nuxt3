@@ -11,7 +11,7 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     return;
   }
   
-  if (!store.access_token) {
+  if (!store.authenticated) {
     try {
       await store.restoreLoginState();
     } catch (err) {
