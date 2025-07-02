@@ -63,9 +63,21 @@ export const useStore = defineStore('authentication', {
       const rcmsApiAccessToken = JSON.parse(localStorage.getItem('rcmsApiAccessToken'))
 
       if (!rcmsApiAccessToken) {
+        await this.logout();
         throw new Error("need to login");
       }
-      this.setProfile({}) // store dummy object.
+      this.access_token = rcmsApiAccessToken;
+      
+      try {
+        const { authFetch } = useAuthFetch(this.access_token);
+        const profileRes = await authFetch("/rcms-api/1/profile", {
+          baseURL: useRuntimeConfig().public.apiBase,
+        });
+        this.setProfile(profileRes);
+      } catch {
+        await this.logout();
+        throw new Error("need to login");
+      }
     },
   },
   getters: {
